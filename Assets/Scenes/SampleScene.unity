@@ -324,15 +324,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a7b105f1c2cde4e8063ec14e9e7c86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _xScaleValue: 0.1
   _swipeInputHandler: {fileID: 534669907}
   _characterData:
-    Position: {x: 0, y: 0}
+    Position: {x: 0.5, y: 0}
     Speed: 30
     UnitDirection: {x: 0, y: 1}
     SpeedDownRatio: 0.3
     SpeedDownAmount: 2
     SpeedUpRatio: 1
-    SpeedUpAmount: 30
+    SpeedUpAmount: 20
   _characterView: {fileID: 1153674075}
   _cameraTransform: {fileID: 534669905}
   _planeGenerator: {fileID: 289699675}

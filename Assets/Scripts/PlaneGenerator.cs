@@ -4,6 +4,8 @@ namespace Rayark.Hi
 {
     public class PlaneGenerator : MonoBehaviour
     {
+        public const float MIN_X_VALUE = -4;
+        public const float MAX_X_VALUE = 4;
         private const float PLANE_DIFF_Z = 33f;
 
         [SerializeField]

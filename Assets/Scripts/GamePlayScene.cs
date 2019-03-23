@@ -9,6 +9,9 @@ namespace Rayark.Hi
         private const float CAMERA_CHARACTER_DIFF_Z = -9;
 
         [SerializeField]
+        private float _xScaleValue;
+
+        [SerializeField]
         private SwipeInputHandler _swipeInputHandler;
 
         [SerializeField]
@@ -27,7 +30,7 @@ namespace Rayark.Hi
 
         void Start()
         {
-            _hiEngine = new HiEngine(_characterData);
+            _hiEngine = new HiEngine(_xScaleValue, _characterData);
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
         }
@@ -43,7 +46,7 @@ namespace Rayark.Hi
             
             var characterPosition = _hiEngine.CurrentCharacterPosition;
             _characterView.Position = new Vector3(
-                characterPosition.x,
+                characterPosition.x * (PlaneGenerator.MAX_X_VALUE - PlaneGenerator.MIN_X_VALUE) + PlaneGenerator.MIN_X_VALUE,
                 _characterView.Position.y,
                 characterPosition.y
                 );
