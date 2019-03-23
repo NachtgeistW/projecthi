@@ -27,6 +27,11 @@ namespace Rayark.Hi
             {
                 _inScenePlanes[i] = Instantiate(_planePrefab, _planeRootTransform);
                 _inScenePlanes[i].transform.localPosition = new Vector3(0, 0, i * PLANE_DIFF_Z);
+                
+                if(i % 5 == 4)
+                {
+                    _inScenePlanes[i].GetComponent<MeshRenderer>().material.color = Color.blue;
+                }
             }
         }
         

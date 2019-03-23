@@ -36,6 +36,13 @@ namespace Rayark.Hi.Engine
         public void Update(float deltaTime)
         {
             _currentCharacter.Position += deltaTime * _currentCharacter.UnitDirection * _currentCharacter.Speed;
+
+            if(_currentCharacter.Position.x <= MIN_X_VALUE ||
+               _currentCharacter.Position.x >= MAX_X_VALUE)
+            {
+                _currentCharacter.UnitDirection.x = -_currentCharacter.UnitDirection.x;
+            }
+
             _currentCharacter.Position.x = Mathf.Clamp(_currentCharacter.Position.x, MIN_X_VALUE, MAX_X_VALUE);
 
             _currentCharacter.Speed =
