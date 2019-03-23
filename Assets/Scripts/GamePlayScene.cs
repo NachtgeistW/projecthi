@@ -39,6 +39,11 @@ namespace Rayark.Hi
                 _cameraTransform.localPosition.y,
                 characterPositionZ + CAMERA_CHARACTER_DIFF_Z);
             _planeGenerator.UpdatePlanes(characterPositionZ);
+
+            if(_hiEngine.CurrentCharacterSpeed <= 0f)
+            {
+                _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
+            }
         }
     }
 }

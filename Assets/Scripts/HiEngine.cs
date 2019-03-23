@@ -14,6 +14,14 @@ namespace Rayark.Hi.Engine
             }
         }
 
+        public float CurrentCharacterSpeed
+        {
+            get
+            {
+                return _currentCharacter.Speed;
+            }
+        }
+
         public HiEngine(CharacterData currentCharacter)
         {
             _currentCharacter = currentCharacter;
@@ -22,6 +30,8 @@ namespace Rayark.Hi.Engine
         public void Update(float deltaTime)
         {
             _currentCharacter.Position.y += deltaTime * _currentCharacter.Speed;
+            _currentCharacter.Speed =
+                Mathf.Max(0, (1 - _currentCharacter.SlowSpeedRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SlowSpeedAmount * deltaTime);
         }
     }
 }
