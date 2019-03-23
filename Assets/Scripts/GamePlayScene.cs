@@ -64,8 +64,12 @@ namespace Rayark.Hi
 
         private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
         {
-            _hiEngine.SpeedUpCharacterSpeed();
-            _hiEngine.ChangeCharacterDirection(swipeDirection);
+            if (_hiEngine.SwipeRemainCount > 0)
+            {
+                _hiEngine.SpeedUpCharacterSpeed();
+                _hiEngine.ChangeCharacterDirection(swipeDirection);
+                _hiEngine.ReduceSwipeRemainCount();
+            }
         }
     }
 }

@@ -5,11 +5,13 @@ namespace Rayark.Hi.Engine
     public class HiEngine
     {
         private const float SWIPE_THRESHOLD = 30f;
+        private const int SWIPE_INIT_COUNT = 5;
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
 
         private float _xScale;
         private CharacterData _currentCharacter;
+        private int _swipeRemainCount;
         
         public Vector2 CurrentCharacterPosition
         {
@@ -27,10 +29,19 @@ namespace Rayark.Hi.Engine
             }
         }
 
+        public int SwipeRemainCount
+        {
+            get
+            {
+                return _swipeRemainCount;
+            }
+        }
+
         public HiEngine(float xScale, CharacterData currentCharacter)
         {
             _xScale = xScale;
             _currentCharacter = currentCharacter;
+            _swipeRemainCount = SWIPE_INIT_COUNT;
         }
 
         public void Update(float deltaTime)
@@ -47,6 +58,11 @@ namespace Rayark.Hi.Engine
 
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
+        }
+
+        public void ReduceSwipeRemainCount()
+        {
+            --_swipeRemainCount;
         }
 
         public void SpeedUpCharacterSpeed()
