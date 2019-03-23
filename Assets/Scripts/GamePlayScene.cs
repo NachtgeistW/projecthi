@@ -7,7 +7,10 @@ namespace Rayark.Hi
     public class GamePlayScene : MonoBehaviour
     {
         private const float CAMERA_CHARACTER_DIFF_Z = -9;
-        
+
+        [SerializeField]
+        private SwipeInputHandler _swipeInputHandler;
+
         [SerializeField]
         private CharacterData _characterData;
 
@@ -26,8 +29,14 @@ namespace Rayark.Hi
         {
             _hiEngine = new HiEngine(_characterData);
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
+            _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
         }
-        
+
+        private void OnDestroy()
+        {
+            _swipeInputHandler.OnSwipe -= _SpeedUpCharacterSpeed;
+        }
+
         void Update()
         {
             _hiEngine.Update(Time.deltaTime);
@@ -44,6 +53,11 @@ namespace Rayark.Hi
             {
                 _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
             }
+        }
+
+        private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
+        {
+            _hiEngine.SpeedUpCharacterSpeed();
         }
     }
 }

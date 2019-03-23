@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Rayark.Hi
 {
     public class SwipeInputHandler : MonoBehaviour
     {
+        public event Action<Vector2> OnSwipe;
+
         private Vector2 _touchBeginPosition;
         private Vector3 _mouseBeginPosition;
 
@@ -30,7 +33,10 @@ namespace Rayark.Hi
                 if (touch.phase == TouchPhase.Ended)
                 {
                     Vector2 swipeDiff = touch.position - _touchBeginPosition;
-                    Debug.Log("Swipe: " + swipeDiff);
+                    if(OnSwipe != null)
+                    {
+                        OnSwipe(swipeDiff);
+                    }
                 }
             }
         }
@@ -45,7 +51,10 @@ namespace Rayark.Hi
             if (Input.GetMouseButtonUp(0))
             {
                 Vector3 swipeDiff = Input.mousePosition - _mouseBeginPosition;
-                Debug.Log("Swipe: " + swipeDiff);
+                if (OnSwipe != null)
+                {
+                    OnSwipe(swipeDiff);
+                }
             }
         }
     }

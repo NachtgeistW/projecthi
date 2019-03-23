@@ -240,6 +240,7 @@ GameObject:
   - component: {fileID: 534669904}
   - component: {fileID: 534669903}
   - component: {fileID: 534669906}
+  - component: {fileID: 534669907}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -323,14 +324,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77a7b105f1c2cde4e8063ec14e9e7c86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _swipeInputHandler: {fileID: 534669907}
   _characterData:
     Position: {x: 0, y: 0}
     Speed: 30
-    SlowSpeedRatio: 0.2
-    SlowSpeedAmount: 1
+    SpeedDownRatio: 0.3
+    SpeedDownAmount: 2
+    SpeedUpRatio: 1
+    SpeedUpAmount: 30
   _characterView: {fileID: 1153674075}
   _cameraTransform: {fileID: 534669905}
   _planeGenerator: {fileID: 289699675}
+--- !u!114 &534669907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 534669902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a20da1cdafd4a3f4b9e42969166b9074, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1069742446
 PrefabInstance:
   m_ObjectHideFlags: 0

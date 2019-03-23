@@ -31,7 +31,14 @@ namespace Rayark.Hi.Engine
         {
             _currentCharacter.Position.y += deltaTime * _currentCharacter.Speed;
             _currentCharacter.Speed =
-                Mathf.Max(0, (1 - _currentCharacter.SlowSpeedRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SlowSpeedAmount * deltaTime);
+                Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
+        }
+
+        public void SpeedUpCharacterSpeed()
+        {
+            _currentCharacter.Speed =
+                _currentCharacter.Speed * _currentCharacter.SpeedUpRatio + 
+                _currentCharacter.SpeedUpAmount;
         }
     }
 }
