@@ -16,13 +16,17 @@ namespace Rayark.Hi
         [SerializeField]
         private Animator _animator;
         
-        public void UpdateCharacterPositionZ(float z)
+        public Vector3 Position
         {
-            _characterTransform.localPosition = new Vector3(
-                _characterTransform.localPosition.x,
-                _characterTransform.localPosition.y,
-                z
-                );
+            get
+            {
+                return _characterTransform.localPosition;
+            }
+
+            set
+            {
+                _characterTransform.localPosition = value;
+            }
         }
 
         public void PlayAnimation(AnimationState state)

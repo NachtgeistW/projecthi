@@ -41,13 +41,17 @@ namespace Rayark.Hi
         {
             _hiEngine.Update(Time.deltaTime);
             
-            float characterPositionZ = _hiEngine.CurrentCharacterPosition.y;
-            _characterView.UpdateCharacterPositionZ(characterPositionZ);
+            var characterPosition = _hiEngine.CurrentCharacterPosition;
+            _characterView.Position = new Vector3(
+                characterPosition.x,
+                _characterView.Position.y,
+                characterPosition.y
+                );
             _cameraTransform.localPosition = new Vector3(
                 _cameraTransform.localPosition.x,
                 _cameraTransform.localPosition.y,
-                characterPositionZ + CAMERA_CHARACTER_DIFF_Z);
-            _planeGenerator.UpdatePlanes(characterPositionZ);
+                characterPosition.y + CAMERA_CHARACTER_DIFF_Z);
+            _planeGenerator.UpdatePlanes(characterPosition.y);
 
             if(_hiEngine.CurrentCharacterSpeed <= 0f)
             {
@@ -58,6 +62,7 @@ namespace Rayark.Hi
         private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
         {
             _hiEngine.SpeedUpCharacterSpeed();
+            _hiEngine.ChangeCharacterDirection(swipeDirection);
         }
     }
 }

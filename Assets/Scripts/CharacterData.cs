@@ -8,6 +8,7 @@ namespace Rayark.Hi.Engine
     {
         public Vector2 Position;
         public float Speed;
+        public Vector2 UnitDirection;
         public float SpeedDownRatio;
         public float SpeedDownAmount;
         public float SpeedUpRatio;

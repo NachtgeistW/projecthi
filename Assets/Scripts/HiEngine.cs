@@ -29,7 +29,7 @@ namespace Rayark.Hi.Engine
 
         public void Update(float deltaTime)
         {
-            _currentCharacter.Position.y += deltaTime * _currentCharacter.Speed;
+            _currentCharacter.Position += deltaTime * _currentCharacter.UnitDirection * _currentCharacter.Speed;
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
         }
@@ -39,6 +39,11 @@ namespace Rayark.Hi.Engine
             _currentCharacter.Speed =
                 _currentCharacter.Speed * _currentCharacter.SpeedUpRatio + 
                 _currentCharacter.SpeedUpAmount;
+        }
+
+        public void ChangeCharacterDirection(Vector2 direction)
+        {
+            _currentCharacter.UnitDirection = direction.normalized;
         }
     }
 }
