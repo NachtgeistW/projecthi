@@ -6,6 +6,7 @@ namespace Rayark.Hi
     {
         public const float MIN_X_VALUE = -4;
         public const float MAX_X_VALUE = 4;
+        private const float MIN_FLOOR_DIFF_Z = 0.03f;
         private const float PLANE_DIFF_Z = 33f;
 
         [SerializeField]
@@ -13,7 +14,7 @@ namespace Rayark.Hi
 
         [SerializeField]
         private GameObject _planePrefab;
-
+        
         [SerializeField]
         private int _planeCount = 10;
 
@@ -26,11 +27,11 @@ namespace Rayark.Hi
             for(int i = 0; i < _planeCount; ++i)
             {
                 _inScenePlanes[i] = Instantiate(_planePrefab, _planeRootTransform);
-                _inScenePlanes[i].transform.localPosition = new Vector3(0, 0, i * PLANE_DIFF_Z);
+                _inScenePlanes[i].transform.localPosition = new Vector3(0, (i % 2 == 0) ? 0 : MIN_FLOOR_DIFF_Z, i * PLANE_DIFF_Z);
                 
                 if(i % 5 == 4)
                 {
-                    _inScenePlanes[i].GetComponent<MeshRenderer>().material.color = Color.blue;
+                    _inScenePlanes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
                 }
             }
         }
