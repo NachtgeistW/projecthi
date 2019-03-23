@@ -6,9 +6,8 @@ namespace Rayark.Hi
 
     public class GamePlayScene : MonoBehaviour
     {
-        private const float CAMERA_CHARACTER_DIFF_Z = -10;
-
-
+        private const float CAMERA_CHARACTER_DIFF_Z = -9;
+        
         [SerializeField]
         private CharacterData _characterData;
 
@@ -17,6 +16,9 @@ namespace Rayark.Hi
 
         [SerializeField]
         private Transform _cameraTransform;
+
+        [SerializeField]
+        private PlaneGenerator _planeGenerator;
 
         private HiEngine _hiEngine;
 
@@ -28,15 +30,17 @@ namespace Rayark.Hi
         void Update()
         {
             _hiEngine.Update(Time.deltaTime);
-
+            
+            float characterPositionZ = _hiEngine.CurrentCharacterPosition.y;
             _characterTransform.localPosition = new Vector3(
                 _characterTransform.localPosition.x,
                 _characterTransform.localPosition.y,
-                _hiEngine.CurrentCharacterPosition.y);
+                characterPositionZ);
             _cameraTransform.localPosition = new Vector3(
                 _cameraTransform.localPosition.x,
                 _cameraTransform.localPosition.y,
-                _hiEngine.CurrentCharacterPosition.y + CAMERA_CHARACTER_DIFF_Z);
+                characterPositionZ + CAMERA_CHARACTER_DIFF_Z);
+            _planeGenerator.UpdatePlanes(characterPositionZ);
         }
     }
 }
