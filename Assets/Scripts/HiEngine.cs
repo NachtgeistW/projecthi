@@ -4,8 +4,9 @@ namespace Rayark.Hi.Engine
 {
     public class HiEngine
     {
+        public const int SWIPE_INIT_COUNT = 5;
+
         private const float SWIPE_THRESHOLD = 30f;
-        private const int SWIPE_INIT_COUNT = 5;
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
 

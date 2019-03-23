@@ -69,6 +69,10 @@ namespace Rayark.Hi
                 _hiEngine.SpeedUpCharacterSpeed();
                 _hiEngine.ChangeCharacterDirection(swipeDirection);
                 _hiEngine.ReduceSwipeRemainCount();
+
+                float scaleValue = _hiEngine.SwipeRemainCount / (float)HiEngine.SWIPE_INIT_COUNT;
+                _characterView.Scale = new Vector3(
+                    scaleValue, scaleValue, scaleValue);
             }
         }
     }

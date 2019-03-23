@@ -29,6 +29,14 @@ namespace Rayark.Hi
             }
         }
 
+        public Vector3 Scale
+        {
+            set
+            {
+                _characterTransform.localScale = value;
+            }
+        }
+
         public void PlayAnimation(AnimationState state)
         {
             _animator.Play(state.ToString());
