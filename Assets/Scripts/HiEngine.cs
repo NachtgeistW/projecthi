@@ -4,6 +4,7 @@ namespace Rayark.Hi.Engine
 {
     public class HiEngine
     {
+        private const float SWIPE_THRESHOLD = 30f;
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
 
@@ -50,6 +51,13 @@ namespace Rayark.Hi.Engine
 
         public void ChangeCharacterDirection(Vector2 direction)
         {
+            if (direction.magnitude < SWIPE_THRESHOLD)
+                return;
+            if (direction.y < 0)
+                return;
+            if (Mathf.Abs(direction.x) > Mathf.Sqrt(3) * direction.y)
+                return;
+
             direction.x *= _xScale;
             _currentCharacter.UnitDirection = direction.normalized;
             
