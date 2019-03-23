@@ -12,7 +12,7 @@ namespace Rayark.Hi
         private CharacterData _characterData;
 
         [SerializeField]
-        private Transform _characterTransform;
+        private CharacterView _characterView;
 
         [SerializeField]
         private Transform _cameraTransform;
@@ -25,6 +25,7 @@ namespace Rayark.Hi
         void Start()
         {
             _hiEngine = new HiEngine(_characterData);
+            _characterView.PlayAnimation(CharacterView.AnimationState.Run);
         }
         
         void Update()
@@ -32,10 +33,7 @@ namespace Rayark.Hi
             _hiEngine.Update(Time.deltaTime);
             
             float characterPositionZ = _hiEngine.CurrentCharacterPosition.y;
-            _characterTransform.localPosition = new Vector3(
-                _characterTransform.localPosition.x,
-                _characterTransform.localPosition.y,
-                characterPositionZ);
+            _characterView.UpdateCharacterPositionZ(characterPositionZ);
             _cameraTransform.localPosition = new Vector3(
                 _cameraTransform.localPosition.x,
                 _cameraTransform.localPosition.y,

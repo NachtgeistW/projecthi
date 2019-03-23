@@ -325,10 +325,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _characterData:
     Position: {x: 0, y: 0}
-    Speed: 20
-  _characterTransform: {fileID: 1497115084}
+    Speed: 30
+  _characterView: {fileID: 1153674075}
   _cameraTransform: {fileID: 534669905}
   _planeGenerator: {fileID: 289699675}
+--- !u!1 &1153674074 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100044, guid: a0a2142fc94939b40985298d4de1b576,
+    type: 3}
+  m_PrefabInstance: {fileID: 1497115083}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1153674075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1153674074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20261e7937f0c0547923d70bc71a518b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _characterTransform: {fileID: 1497115084}
+  _animator: {fileID: 1497115085}
 --- !u!1001 &1497115083
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -384,6 +404,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: a0a2142fc94939b40985298d4de1b576, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ac8f62ac781446b4397bd503a5b54509, type: 2}
     - target: {fileID: 13700000, guid: a0a2142fc94939b40985298d4de1b576, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -393,6 +417,12 @@ PrefabInstance:
 --- !u!4 &1497115084 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400044, guid: a0a2142fc94939b40985298d4de1b576,
+    type: 3}
+  m_PrefabInstance: {fileID: 1497115083}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1497115085 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: a0a2142fc94939b40985298d4de1b576,
     type: 3}
   m_PrefabInstance: {fileID: 1497115083}
   m_PrefabAsset: {fileID: 0}
