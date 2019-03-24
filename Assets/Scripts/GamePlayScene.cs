@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Rayark.Hi
 {
@@ -26,6 +27,9 @@ namespace Rayark.Hi
         [SerializeField]
         private PlaneGenerator _planeGenerator;
 
+        [SerializeField]
+        private Text _remainSwipeTimeCountText;
+
         private HiEngine _hiEngine;
 
         void Start()
@@ -33,6 +37,7 @@ namespace Rayark.Hi
             _hiEngine = new HiEngine(_xScaleValue, _characterData);
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
+            _remainSwipeTimeCountText.text = _hiEngine.SwipeRemainCount.ToString();
         }
 
         private void OnDestroy()
@@ -69,10 +74,7 @@ namespace Rayark.Hi
                 _hiEngine.SpeedUpCharacterSpeed();
                 _hiEngine.ChangeCharacterDirection(swipeDirection);
                 _hiEngine.ReduceSwipeRemainCount();
-
-                float scaleValue = _hiEngine.SwipeRemainCount / (float)HiEngine.SWIPE_INIT_COUNT;
-                _characterView.Scale = new Vector3(
-                    scaleValue, scaleValue, scaleValue);
+                _remainSwipeTimeCountText.text = _hiEngine.SwipeRemainCount.ToString();
             }
         }
     }
