@@ -81,7 +81,7 @@ namespace Rayark.Hi
 
             var characterPosition = _hiEngine.CurrentCharacterPosition;
             _characterView.Position = new Vector3(
-                characterPosition.x * (PlaneGenerator.MAX_X_VALUE - PlaneGenerator.MIN_X_VALUE) + PlaneGenerator.MIN_X_VALUE,
+                characterPosition.x,
                 _characterView.Position.y,
                 characterPosition.y
                 );
@@ -165,11 +165,11 @@ namespace Rayark.Hi
 
         public void StartGame()
         {
-            _hiEngine = new HiEngine(_xScaleValue, _characterData, 
+            _hiEngine = new HiEngine(PlaneGenerator.MIN_X_VALUE, PlaneGenerator.MAX_X_VALUE, _xScaleValue, _characterData, 
                 new Item[] {
-                    new SpeedUpFloor(new Vector2(3, 6)),
-                    new SpeedDownFloor(new Vector2(3, 3)),
-                    new SwipeUpItem(new Vector2(3, 3))});
+                    new SpeedUpFloor(new Vector2(2, 4)),
+                    new SpeedDownFloor(new Vector2(2, 2)),
+                    new SwipeUpItem(new Vector2(2, 2))});
             _RegisterEngineEvent();
 
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
