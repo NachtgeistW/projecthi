@@ -37,7 +37,7 @@ namespace Rayark.Hi
             _hiEngine = new HiEngine(_xScaleValue, _characterData);
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
-            _remainSwipeTimeCountText.text = _hiEngine.SwipeRemainCount.ToString();
+            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
         }
 
         private void OnDestroy()
@@ -65,6 +65,8 @@ namespace Rayark.Hi
             {
                 _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
             }
+
+            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
         }
 
         private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
@@ -74,8 +76,13 @@ namespace Rayark.Hi
                 _hiEngine.SpeedUpCharacterSpeed();
                 _hiEngine.ChangeCharacterDirection(swipeDirection);
                 _hiEngine.ReduceSwipeRemainCount();
-                _remainSwipeTimeCountText.text = _hiEngine.SwipeRemainCount.ToString();
+                _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
             }
+        }
+
+        private void _UpdateRemainSwipeTimeCountText(int count)
+        {
+            _remainSwipeTimeCountText.text = count.ToString();
         }
     }
 }

@@ -7,12 +7,16 @@ namespace Rayark.Hi.Engine
         public const int SWIPE_INIT_COUNT = 5;
 
         private const float SWIPE_THRESHOLD = 30f;
+        private const float SECTION_DISTANCE = 165f;
+        private const float SECTION_DIFF = 33f;
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
 
         private float _xScale;
         private CharacterData _currentCharacter;
         private int _swipeRemainCount;
+        private float _runMiles;
+        private int _sectionIndex;
         
         public Vector2 CurrentCharacterPosition
         {
@@ -43,6 +47,7 @@ namespace Rayark.Hi.Engine
             _xScale = xScale;
             _currentCharacter = currentCharacter;
             _swipeRemainCount = SWIPE_INIT_COUNT;
+            _runMiles = 0;
         }
 
         public void Update(float deltaTime)
@@ -57,6 +62,12 @@ namespace Rayark.Hi.Engine
 
             _currentCharacter.Position.x = Mathf.Clamp(_currentCharacter.Position.x, MIN_X_VALUE, MAX_X_VALUE);
 
+            _runMiles = _currentCharacter.Position.y;
+            int previousSectionIndex = _sectionIndex;
+            _sectionIndex = Mathf.FloorToInt((_runMiles + SECTION_DIFF) / SECTION_DISTANCE);
+            if (_IsGetSwipe(_sectionIndex, previousSectionIndex))
+                ++_swipeRemainCount;
+            
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
         }
@@ -85,6 +96,11 @@ namespace Rayark.Hi.Engine
             direction.x *= _xScale;
             _currentCharacter.UnitDirection = direction.normalized;
             
+        }
+
+        private bool _IsGetSwipe(int currentSectionIndex, int previousSectionIndex)
+        {
+            return currentSectionIndex != previousSectionIndex;
         }
     }
 }
