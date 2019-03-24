@@ -34,23 +34,39 @@ namespace Rayark.Hi
         [SerializeField]
         private SpeedUpFloorGenerator _speedUpFloorGenerator;
 
+        [SerializeField]
+        private Text _distanceText;
+
+        [SerializeField]
+        private GameObject _gameOverGroup;
+
+        [SerializeField]
+        private Text _gameOverDistanceText;
+
         private HiEngine _hiEngine;
+        private bool _isGameOver;
 
         void Start()
         {
             _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(3, 6))});
+            _RegisterEngineEvent();
+
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
-            _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
+
+            _isGameOver = false;
         }
 
         private void OnDestroy()
         {
-            _swipeInputHandler.OnSwipe -= _SpeedUpCharacterSpeed;
+            _UnregisterEngineEvent();
         }
 
         void Update()
         {
+            if (_isGameOver)
+                return;
+
             _hiEngine.Update(Time.deltaTime);
 
             _speedUpFloorGenerator.UpdateSpeedUpFloor(
@@ -70,12 +86,19 @@ namespace Rayark.Hi
                 characterPosition.y + CAMERA_CHARACTER_DIFF_Z);
             _planeGenerator.UpdatePlanes(characterPosition.y);
 
-            if(_hiEngine.CurrentCharacterSpeed <= 0f)
+            
+            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
+            _distanceText.text = ((int)_hiEngine.Distance).ToString() + " m" ;
+
+            if (_hiEngine.CurrentCharacterSpeed <= 0f)
             {
                 _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
-            }
+                _UnregisterEngineEvent();
 
-            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
+                _gameOverDistanceText.text = ((int)_hiEngine.Distance).ToString() + " m";
+                _gameOverGroup.SetActive(true);
+                _isGameOver = true;
+            }
         }
 
         private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
@@ -92,6 +115,16 @@ namespace Rayark.Hi
         private void _UpdateRemainSwipeTimeCountText(int count)
         {
             _remainSwipeTimeCountText.text = count.ToString();
+        }
+
+        private void _RegisterEngineEvent()
+        {
+            _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
+        }
+
+        private void _UnregisterEngineEvent()
+        {
+            _swipeInputHandler.OnSwipe -= _SpeedUpCharacterSpeed;
         }
     }
 }

@@ -62,6 +62,15 @@ namespace Rayark.Hi.Engine
             }
         }
 
+        public float Distance
+        {
+            get
+            {
+                return _runMiles;
+            }
+        }
+
+
         public HiEngine(float xScale, CharacterData currentCharacter, Item[] items)
         {
             _xScale = xScale;
