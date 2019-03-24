@@ -23,6 +23,7 @@ namespace Rayark.Hi.Engine
         private const int ITEM_SECTION_DIFF = (int)(ITEM_GENERATED_DISTANCE / ITEM_SECTION_DISTANCE);
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
+        private const float EMPTY_PROBABILITY = 0.3f;
 
         private float _xScale;
         private CharacterData _currentCharacter;
@@ -164,9 +165,9 @@ namespace Rayark.Hi.Engine
             if (direction.magnitude < SWIPE_THRESHOLD)
                 return;
             if (direction.y < 0)
-                return;
+                direction.y = -direction.y;
             if (Mathf.Abs(direction.x) > Mathf.Sqrt(3) * direction.y)
-                return;
+                direction = new Vector2(direction.x, Mathf.Abs(direction.x / Mathf.Sqrt(3)));
 
             direction.x *= _xScale;
             _currentCharacter.UnitDirection = direction.normalized;
@@ -186,7 +187,7 @@ namespace Rayark.Hi.Engine
                 if (item.IsUsed)
                     continue;
 
-                Rect itemRect = new Rect(item.Position, item.Data.Size);
+                Rect itemRect = new Rect(item.Position - item.Data.Size / 2, item.Data.Size);
                 if (itemRect.Overlaps(characterRect))
                 {
                     item.Data.GetEffect(this);
@@ -202,29 +203,39 @@ namespace Rayark.Hi.Engine
             {
                 for(int i = lastItemGeneratedSectionIndex + 1; i <= currentItemSectionIndex + ITEM_SECTION_DIFF; ++i)
                 {
-                    var itemIndex = Random.Range(0, _items.Length);
-                    var item = _items[itemIndex];
-
-                    if (_IsItemGenerated(item.GeneratedProbability))
+                    var itemIndex = _SelectItemGeneratedIndex(_items.Select(item => item.GeneratedProbability).Concat(new float[] { EMPTY_PROBABILITY }).ToArray());
+                    if (itemIndex >= _items.Length)
+                        continue;
+                    var generatedItem = _items[itemIndex];
+                    
+                    Rect itemRange = new Rect(new Vector2(0, i * ITEM_SECTION_DISTANCE), new Vector2(5, 10));
+                    _itemInstances.Add(new ItemInstance
                     {
-                        Rect itemRange = new Rect(new Vector2(0, i * ITEM_SECTION_DISTANCE), new Vector2(5, 10));
-                        _itemInstances.Add(new ItemInstance
-                        {
-                            Data = item,
-                            Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
-                            IsUsed = false,
-                        });
+                        Data = generatedItem,
+                        Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
+                        IsUsed = false,
+                    });
                             
-                    }
                     _lastItemGeneratedSectionIndex = i;
                 }
             }
         }
         
 
-        private bool _IsItemGenerated(float probability)
+        private int _SelectItemGeneratedIndex(float[] weights)
         {
-            return Random.Range(0f, 1f) >= probability;
+            float totalWeight = weights.Sum();
+            float selectedWeight = Random.Range(0f, totalWeight);
+            for(int i = 0; i < weights.Length; ++i)
+            {
+                selectedWeight -= weights[i];
+                if(selectedWeight <= 0f)
+                {
+                    return i;
+                }
+            }
+
+            return weights.Length - 1;
         }
     }
 }

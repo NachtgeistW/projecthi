@@ -20,7 +20,7 @@ namespace Rayark.Hi.Engine
 
         float Item.GeneratedProbability
         {
-            get { return 0.6f; }
+            get { return 0.8f; }
         }
 
         void Item.GetEffect(IEffect effect)
