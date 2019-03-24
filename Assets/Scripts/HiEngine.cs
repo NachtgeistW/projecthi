@@ -74,7 +74,17 @@ namespace Rayark.Hi.Engine
         public HiEngine(float xScale, CharacterData currentCharacter, Item[] items)
         {
             _xScale = xScale;
-            _currentCharacter = currentCharacter;
+            _currentCharacter = new CharacterData
+            {
+                Position = currentCharacter.Position,
+                Size = currentCharacter.Size,
+                Speed = currentCharacter.Speed,
+                SpeedUpRatio = currentCharacter.SpeedUpRatio,
+                SpeedUpAmount = currentCharacter.SpeedUpAmount,
+                UnitDirection = currentCharacter.UnitDirection,
+                SpeedDownRatio = currentCharacter.SpeedDownRatio,
+                SpeedDownAmount = currentCharacter.SpeedDownAmount,
+            };
             _items = items;
             _swipeRemainCount = SWIPE_INIT_COUNT;
             _runMiles = 0;

@@ -48,13 +48,7 @@ namespace Rayark.Hi
 
         void Start()
         {
-            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(3, 6))});
-            _RegisterEngineEvent();
-
-            _characterView.PlayAnimation(CharacterView.AnimationState.Run);
-            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
-
-            _isGameOver = false;
+            StartGame();
         }
 
         private void OnDestroy()
@@ -95,6 +89,8 @@ namespace Rayark.Hi
                 _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
                 _UnregisterEngineEvent();
 
+                _swipeInputHandler.enabled = false;
+
                 _gameOverDistanceText.text = ((int)_hiEngine.Distance).ToString() + " m";
                 _gameOverGroup.SetActive(true);
                 _isGameOver = true;
@@ -125,6 +121,20 @@ namespace Rayark.Hi
         private void _UnregisterEngineEvent()
         {
             _swipeInputHandler.OnSwipe -= _SpeedUpCharacterSpeed;
+        }
+
+        public void StartGame()
+        {
+            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(3, 6)) });
+            _RegisterEngineEvent();
+
+            _characterView.PlayAnimation(CharacterView.AnimationState.Run);
+            _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
+            _planeGenerator.Reset();
+            
+            _isGameOver = false;
+            _gameOverGroup.SetActive(false);
+            _swipeInputHandler.enabled = true;
         }
     }
 }

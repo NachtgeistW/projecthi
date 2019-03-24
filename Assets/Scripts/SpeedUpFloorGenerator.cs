@@ -17,7 +17,10 @@ namespace Rayark.Hi
         {
             if(positions.Length > _speedUpFloorInstances.Count)
             {
-                _speedUpFloorInstances.Add(Instantiate(_speedUpFloorPrefab, _speedUpFloorRootTransform));
+                for (int i = _speedUpFloorInstances.Count; i < positions.Length; ++i)
+                {
+                    _speedUpFloorInstances.Add(Instantiate(_speedUpFloorPrefab, _speedUpFloorRootTransform));
+                }
             }
 
             var speedUpFloors = _speedUpFloorInstances.ToArray();

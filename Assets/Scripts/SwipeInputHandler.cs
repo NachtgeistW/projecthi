@@ -7,6 +7,7 @@ namespace Rayark.Hi
     {
         public event Action<Vector2> OnSwipe;
 
+        private bool _isClicked = false;
         private Vector2 _touchBeginPosition;
         private Vector3 _mouseBeginPosition;
 
@@ -19,6 +20,11 @@ namespace Rayark.Hi
 #endif
         }
 
+        private void OnDisable()
+        {
+            _isClicked = false;
+        }
+
         private void _TouchSwipe()
         {
             if (Input.touchCount > 0)
@@ -28,15 +34,17 @@ namespace Rayark.Hi
                 if (touch.phase == TouchPhase.Began)
                 {
                     _touchBeginPosition = touch.position;
+                    _isClicked = true;
                 }
 
-                if (touch.phase == TouchPhase.Ended)
+                if (touch.phase == TouchPhase.Ended && _isClicked)
                 {
                     Vector2 swipeDiff = touch.position - _touchBeginPosition;
                     if(OnSwipe != null)
                     {
                         OnSwipe(swipeDiff);
                     }
+                    _isClicked = false;
                 }
             }
         }
@@ -46,15 +54,17 @@ namespace Rayark.Hi
             if (Input.GetMouseButtonDown(0))
             {
                 _mouseBeginPosition = Input.mousePosition;
+                _isClicked = true;
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && _isClicked)
             {
                 Vector3 swipeDiff = Input.mousePosition - _mouseBeginPosition;
                 if (OnSwipe != null)
                 {
                     OnSwipe(swipeDiff);
                 }
+                _isClicked = false;
             }
         }
     }

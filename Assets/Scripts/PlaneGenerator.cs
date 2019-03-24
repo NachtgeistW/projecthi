@@ -27,13 +27,8 @@ namespace Rayark.Hi
             for(int i = 0; i < _planeCount; ++i)
             {
                 _inScenePlanes[i] = Instantiate(_planePrefab, _planeRootTransform);
-                _inScenePlanes[i].transform.localPosition = new Vector3(0, (i % 2 == 0) ? 0 : MIN_FLOOR_DIFF_Z, i * PLANE_DIFF_Z);
-                
-                if(i % 5 == 4)
-                {
-                    _inScenePlanes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
-                }
             }
+            Reset();
         }
         
         public void UpdatePlanes(float characterPositionZ)
@@ -54,7 +49,21 @@ namespace Rayark.Hi
             }
         }
 
+        public void Reset()
+        {
+            for (int i = 0; i < _planeCount; ++i)
+            {
+                _inScenePlanes[i].transform.localPosition = new Vector3(0, (i % 2 == 0) ? 0 : MIN_FLOOR_DIFF_Z, i * PLANE_DIFF_Z);
 
+                if (i % 5 == 4)
+                {
+                    _inScenePlanes[i].GetComponent<MeshRenderer>().material.color = Color.grey;
+                }
+            }
+
+            _currentPlaneIndex = 0;
+        }
+        
         private int _GetNextPlaneIndex(int index)
         {
             return (_currentPlaneIndex + 1) % _planeCount;
