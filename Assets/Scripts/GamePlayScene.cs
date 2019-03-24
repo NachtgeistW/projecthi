@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Rayark.Hi
@@ -30,11 +31,14 @@ namespace Rayark.Hi
         [SerializeField]
         private Text _remainSwipeTimeCountText;
 
+        [SerializeField]
+        private SpeedUpFloorGenerator _speedUpFloorGenerator;
+
         private HiEngine _hiEngine;
 
         void Start()
         {
-            _hiEngine = new HiEngine(_xScaleValue, _characterData);
+            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(30, 30))});
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
@@ -48,7 +52,12 @@ namespace Rayark.Hi
         void Update()
         {
             _hiEngine.Update(Time.deltaTime);
-            
+
+            _speedUpFloorGenerator.UpdateSpeedUpFloor(
+                _hiEngine.Items.Where(item => item.Data is SpeedUpFloor)
+                .Select(item => new Vector3(item.Position.x, 0, item.Position.y))
+                .ToArray());
+
             var characterPosition = _hiEngine.CurrentCharacterPosition;
             _characterView.Position = new Vector3(
                 characterPosition.x * (PlaneGenerator.MAX_X_VALUE - PlaneGenerator.MIN_X_VALUE) + PlaneGenerator.MIN_X_VALUE,

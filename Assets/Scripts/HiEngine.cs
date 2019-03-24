@@ -1,9 +1,18 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Rayark.Hi.Engine
 {
-    public class HiEngine
+    public class HiEngine : IEffect
     {
+        public class ItemInstance
+        {
+            public Item Data;
+            public Vector2 Position;
+            public bool IsUsed;
+        }
+
         public const int SWIPE_INIT_COUNT = 5;
 
         private const float SWIPE_THRESHOLD = 30f;
@@ -14,6 +23,8 @@ namespace Rayark.Hi.Engine
 
         private float _xScale;
         private CharacterData _currentCharacter;
+        private Item[] _items;
+        private List<ItemInstance> _itemInstances;
         private int _swipeRemainCount;
         private float _runMiles;
         private int _sectionIndex;
@@ -42,12 +53,32 @@ namespace Rayark.Hi.Engine
             }
         }
 
-        public HiEngine(float xScale, CharacterData currentCharacter)
+        public IEnumerable<ItemInstance> Items
+        {
+            get
+            {
+                return _itemInstances;
+            }
+        }
+
+        public HiEngine(float xScale, CharacterData currentCharacter, Item[] items)
         {
             _xScale = xScale;
             _currentCharacter = currentCharacter;
+            _items = items;
             _swipeRemainCount = SWIPE_INIT_COUNT;
             _runMiles = 0;
+
+            _itemInstances = new List<ItemInstance>();
+            var speedUpFloor = _items.FirstOrDefault(item => item is SpeedUpFloor);
+            if(speedUpFloor != null)
+            {
+                _itemInstances.Add(new ItemInstance
+                {
+                    Data = speedUpFloor,
+                    Position = new Vector2(0, 34)
+                });
+            }
         }
 
         public void Update(float deltaTime)
@@ -67,9 +98,11 @@ namespace Rayark.Hi.Engine
             _sectionIndex = Mathf.FloorToInt((_runMiles + SECTION_DIFF) / SECTION_DISTANCE);
             if (_IsGetSwipe(_sectionIndex, previousSectionIndex))
                 ++_swipeRemainCount;
-            
+
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
+
+            _TouchItems(_currentCharacter.Position, _currentCharacter.Size, _itemInstances);
         }
 
         public void ReduceSwipeRemainCount()
@@ -79,9 +112,14 @@ namespace Rayark.Hi.Engine
 
         public void SpeedUpCharacterSpeed()
         {
+            SpeedUpCharacterSpeed(_currentCharacter.SpeedUpRatio, _currentCharacter.SpeedUpAmount);
+        }
+
+        public void SpeedUpCharacterSpeed(float speedUpRatio, float speedUpAmount)
+        {
             _currentCharacter.Speed =
-                _currentCharacter.Speed * _currentCharacter.SpeedUpRatio + 
-                _currentCharacter.SpeedUpAmount;
+                _currentCharacter.Speed * speedUpRatio +
+                speedUpAmount;
         }
 
         public void ChangeCharacterDirection(Vector2 direction)
@@ -102,5 +140,24 @@ namespace Rayark.Hi.Engine
         {
             return currentSectionIndex != previousSectionIndex;
         }
+
+        private void _TouchItems(Vector2 characterPosition, float characterSize, IEnumerable<ItemInstance> itemInstances)
+        {
+            Rect characterRect = new Rect(characterPosition, new Vector2(characterSize, characterSize));
+            foreach(var item in itemInstances)
+            {
+                if (item.IsUsed)
+                    continue;
+
+                Rect itemRect = new Rect(item.Position, item.Data.Size);
+                if (itemRect.Overlaps(characterRect))
+                {
+                    item.Data.GetEffect(this);
+                    item.IsUsed = true;
+                }
+            }
+        }
+
+        
     }
 }

@@ -7,6 +7,7 @@ namespace Rayark.Hi.Engine
     public class CharacterData
     {
         public Vector2 Position;
+        public float Size;
         public float Speed;
         public Vector2 UnitDirection;
         public float SpeedDownRatio;
