@@ -28,6 +28,7 @@ namespace Rayark.Hi.Engine
         private int _swipeRemainCount;
         private float _runMiles;
         private int _sectionIndex;
+        private int _lastItemGeneratedSectionIndex;
         
         public Vector2 CurrentCharacterPosition
         {
@@ -68,8 +69,10 @@ namespace Rayark.Hi.Engine
             _items = items;
             _swipeRemainCount = SWIPE_INIT_COUNT;
             _runMiles = 0;
+            _lastItemGeneratedSectionIndex = -1;
 
             _itemInstances = new List<ItemInstance>();
+            /*
             var speedUpFloor = _items.FirstOrDefault(item => item is SpeedUpFloor);
             if(speedUpFloor != null)
             {
@@ -79,6 +82,7 @@ namespace Rayark.Hi.Engine
                     Position = new Vector2(0, 34)
                 });
             }
+            */
         }
 
         public void Update(float deltaTime)
@@ -102,7 +106,9 @@ namespace Rayark.Hi.Engine
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
 
+            _GenerateItems(_sectionIndex, _lastItemGeneratedSectionIndex);
             _TouchItems(_currentCharacter.Position, _currentCharacter.Size, _itemInstances);
+
         }
 
         public void ReduceSwipeRemainCount()
@@ -158,6 +164,33 @@ namespace Rayark.Hi.Engine
             }
         }
 
+        private void _GenerateItems(int currentSectionIndex, int lastItemGeneratedSectionIndex)
+        {
+            if( currentSectionIndex >= lastItemGeneratedSectionIndex - 2)
+            {
+                for(int i = lastItemGeneratedSectionIndex + 1; i <= currentSectionIndex + 2; ++i)
+                {
+                    foreach (var item in _items) {
+                        if (_IsItemGenerated(item.GeneratedProbability))
+                        {
+                            Rect itemRange = new Rect(new Vector2(0, i * SECTION_DISTANCE + SECTION_DIFF), new Vector2(5, 10));
+                            _itemInstances.Add(new ItemInstance
+                            {
+                                Data = item,
+                                Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
+                                IsUsed = false,
+                            });
+                        }
+                    }
+                    _lastItemGeneratedSectionIndex = i;
+                }
+            }
+        }
         
+
+        private bool _IsItemGenerated(float probability)
+        {
+            return Random.Range(0f, 1f) >= probability;
+        }
     }
 }

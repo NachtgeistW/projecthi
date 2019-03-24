@@ -38,7 +38,7 @@ namespace Rayark.Hi
 
         void Start()
         {
-            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(30, 30))});
+            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(3, 6))});
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _swipeInputHandler.OnSwipe += _SpeedUpCharacterSpeed;
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
