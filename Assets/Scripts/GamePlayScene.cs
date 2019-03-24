@@ -32,7 +32,10 @@ namespace Rayark.Hi
         private Text _remainSwipeTimeCountText;
 
         [SerializeField]
-        private SpeedUpFloorGenerator _speedUpFloorGenerator;
+        private ItemGenerator _speedUpFloorGenerator;
+
+        [SerializeField]
+        private ItemGenerator _speedDownFloorGenerator;
 
         [SerializeField]
         private Text _distanceText;
@@ -63,8 +66,13 @@ namespace Rayark.Hi
 
             _hiEngine.Update(Time.deltaTime);
 
-            _speedUpFloorGenerator.UpdateSpeedUpFloor(
+            _speedUpFloorGenerator.UpdateItems(
                 _hiEngine.Items.Where(item => item.Data is SpeedUpFloor)
+                .Select(item => new Vector3(item.Position.x, 0, item.Position.y))
+                .ToArray());
+
+            _speedDownFloorGenerator.UpdateItems(
+                _hiEngine.Items.Where(item => item.Data is SpeedDownFloor)
                 .Select(item => new Vector3(item.Position.x, 0, item.Position.y))
                 .ToArray());
 
@@ -125,12 +133,17 @@ namespace Rayark.Hi
 
         public void StartGame()
         {
-            _hiEngine = new HiEngine(_xScaleValue, _characterData, new Item[] { new SpeedUpFloor(new Vector2(3, 6)) });
+            _hiEngine = new HiEngine(_xScaleValue, _characterData, 
+                new Item[] {
+                    new SpeedUpFloor(new Vector2(3, 6)),
+                    new SpeedDownFloor(new Vector2(3, 3))});
             _RegisterEngineEvent();
 
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
             _planeGenerator.Reset();
+            _speedUpFloorGenerator.ReleaseObjects();
+            _speedDownFloorGenerator.ReleaseObjects();
             
             _isGameOver = false;
             _gameOverGroup.SetActive(false);

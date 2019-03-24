@@ -16,8 +16,11 @@ namespace Rayark.Hi.Engine
         public const int SWIPE_INIT_COUNT = 5;
 
         private const float SWIPE_THRESHOLD = 30f;
-        private const float SECTION_DISTANCE = 165f;
-        private const float SECTION_DIFF = 33f;
+        private const float ITEM_SECTION_DISTANCE = 50f;
+        private const float SWIPE_SECTION_DISTANCE = 165f;
+        private const float SWIPE_SECTION_DIFF = 33f;
+        private const float ITEM_GENERATED_DISTANCE = 330f;
+        private const int ITEM_SECTION_DIFF = (int)(ITEM_GENERATED_DISTANCE / ITEM_SECTION_DISTANCE);
         private const float MIN_X_VALUE = 0;
         private const float MAX_X_VALUE = 1;
 
@@ -27,7 +30,7 @@ namespace Rayark.Hi.Engine
         private List<ItemInstance> _itemInstances;
         private int _swipeRemainCount;
         private float _runMiles;
-        private int _sectionIndex;
+        private int _swipeSectionIndex;
         private int _lastItemGeneratedSectionIndex;
         
         public Vector2 CurrentCharacterPosition
@@ -117,15 +120,15 @@ namespace Rayark.Hi.Engine
             _currentCharacter.Position.x = Mathf.Clamp(_currentCharacter.Position.x, MIN_X_VALUE, MAX_X_VALUE);
 
             _runMiles = _currentCharacter.Position.y;
-            int previousSectionIndex = _sectionIndex;
-            _sectionIndex = Mathf.FloorToInt((_runMiles + SECTION_DIFF) / SECTION_DISTANCE);
-            if (_IsGetSwipe(_sectionIndex, previousSectionIndex))
+            int previousSectionIndex = _swipeSectionIndex;
+            _swipeSectionIndex = Mathf.FloorToInt((_runMiles + SWIPE_SECTION_DIFF) / SWIPE_SECTION_DISTANCE);
+            if (_IsGetSwipe(_swipeSectionIndex, previousSectionIndex))
                 ++_swipeRemainCount;
 
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
 
-            _GenerateItems(_sectionIndex, _lastItemGeneratedSectionIndex);
+            _GenerateItems(_lastItemGeneratedSectionIndex);
             _TouchItems(_currentCharacter.Position, _currentCharacter.Size, _itemInstances);
 
         }
@@ -137,14 +140,16 @@ namespace Rayark.Hi.Engine
 
         public void SpeedUpCharacterSpeed()
         {
-            SpeedUpCharacterSpeed(_currentCharacter.SpeedUpRatio, _currentCharacter.SpeedUpAmount);
+            SpeedChangeCharacterSpeed(_currentCharacter.SpeedUpRatio, _currentCharacter.SpeedUpAmount);
         }
 
-        public void SpeedUpCharacterSpeed(float speedUpRatio, float speedUpAmount)
+        public void SpeedChangeCharacterSpeed(float speedChangeRatio, float speedChangeAmount)
         {
             _currentCharacter.Speed =
-                _currentCharacter.Speed * speedUpRatio +
-                speedUpAmount;
+                _currentCharacter.Speed * speedChangeRatio +
+                speedChangeAmount;
+
+            _currentCharacter.Speed = Mathf.Max(0f, _currentCharacter.Speed);
         }
 
         public void ChangeCharacterDirection(Vector2 direction)
@@ -183,23 +188,26 @@ namespace Rayark.Hi.Engine
             }
         }
 
-        private void _GenerateItems(int currentSectionIndex, int lastItemGeneratedSectionIndex)
+        private void _GenerateItems(int lastItemGeneratedSectionIndex)
         {
-            if( currentSectionIndex >= lastItemGeneratedSectionIndex - 2)
+            int currentItemSectionIndex = Mathf.FloorToInt(_runMiles / ITEM_SECTION_DISTANCE);
+            if (currentItemSectionIndex >= lastItemGeneratedSectionIndex - ITEM_SECTION_DIFF)
             {
-                for(int i = lastItemGeneratedSectionIndex + 1; i <= currentSectionIndex + 2; ++i)
+                for(int i = lastItemGeneratedSectionIndex + 1; i <= currentItemSectionIndex + ITEM_SECTION_DIFF; ++i)
                 {
-                    foreach (var item in _items) {
-                        if (_IsItemGenerated(item.GeneratedProbability))
+                    var itemIndex = Random.Range(0, _items.Length);
+                    var item = _items[itemIndex];
+
+                    if (_IsItemGenerated(item.GeneratedProbability))
+                    {
+                        Rect itemRange = new Rect(new Vector2(0, i * ITEM_SECTION_DISTANCE), new Vector2(5, 10));
+                        _itemInstances.Add(new ItemInstance
                         {
-                            Rect itemRange = new Rect(new Vector2(0, i * SECTION_DISTANCE + SECTION_DIFF), new Vector2(5, 10));
-                            _itemInstances.Add(new ItemInstance
-                            {
-                                Data = item,
-                                Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
-                                IsUsed = false,
-                            });
-                        }
+                            Data = item,
+                            Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
+                            IsUsed = false,
+                        });
+                            
                     }
                     _lastItemGeneratedSectionIndex = i;
                 }

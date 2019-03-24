@@ -2,6 +2,6 @@
 {
     public interface IEffect
     {
-        void SpeedUpCharacterSpeed(float speedUpRatio, float speedUpAmount);
+        void SpeedChangeCharacterSpeed(float speedUpRatio, float speedUpAmount);
     }
 }
