@@ -123,7 +123,7 @@ namespace Rayark.Hi.Engine
             int previousSectionIndex = _swipeSectionIndex;
             _swipeSectionIndex = Mathf.FloorToInt((_runMiles + SWIPE_SECTION_DIFF) / SWIPE_SECTION_DISTANCE);
             if (_IsGetSwipe(_swipeSectionIndex, previousSectionIndex))
-                ++_swipeRemainCount;
+                (this as IEffect).ChangeRemainSwipeCount(1);
 
             _currentCharacter.Speed =
                 Mathf.Max(0, (1 - _currentCharacter.SpeedDownRatio * deltaTime) * _currentCharacter.Speed - _currentCharacter.SpeedDownAmount * deltaTime);
@@ -135,14 +135,14 @@ namespace Rayark.Hi.Engine
 
         public void ReduceSwipeRemainCount()
         {
-            --_swipeRemainCount;
+            (this as IEffect).ChangeRemainSwipeCount(-1);
         }
 
         public void SpeedUpCharacterSpeed()
         {
             SpeedChangeCharacterSpeed(_currentCharacter.SpeedUpRatio, _currentCharacter.SpeedUpAmount);
         }
-
+        
         public void SpeedChangeCharacterSpeed(float speedChangeRatio, float speedChangeAmount)
         {
             _currentCharacter.Speed =
@@ -151,6 +151,13 @@ namespace Rayark.Hi.Engine
 
             _currentCharacter.Speed = Mathf.Max(0f, _currentCharacter.Speed);
         }
+
+        void IEffect.ChangeRemainSwipeCount(int amount)
+        {
+            _swipeRemainCount += amount;
+            _swipeRemainCount = Mathf.Max(0, _swipeRemainCount);
+        }
+
 
         public void ChangeCharacterDirection(Vector2 direction)
         {

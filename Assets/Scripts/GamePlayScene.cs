@@ -38,6 +38,9 @@ namespace Rayark.Hi
         private ItemGenerator _speedDownFloorGenerator;
 
         [SerializeField]
+        private ItemGenerator _swipeUpItemGenerator;
+
+        [SerializeField]
         private Text _distanceText;
 
         [SerializeField]
@@ -48,9 +51,17 @@ namespace Rayark.Hi
 
         private HiEngine _hiEngine;
         private bool _isGameOver;
+        private ItemGenerator[] _itemGenerators;
 
         void Start()
         {
+            _itemGenerators = new ItemGenerator[]
+            {
+                _speedUpFloorGenerator,
+                _speedDownFloorGenerator,
+                _swipeUpItemGenerator,
+            };
+
             StartGame();
         }
 
@@ -66,15 +77,7 @@ namespace Rayark.Hi
 
             _hiEngine.Update(Time.deltaTime);
 
-            _speedUpFloorGenerator.UpdateItems(
-                _hiEngine.Items.Where(item => item.Data is SpeedUpFloor)
-                .Select(item => new Vector3(item.Position.x, 0, item.Position.y))
-                .ToArray());
-
-            _speedDownFloorGenerator.UpdateItems(
-                _hiEngine.Items.Where(item => item.Data is SpeedDownFloor)
-                .Select(item => new Vector3(item.Position.x, 0, item.Position.y))
-                .ToArray());
+            _UpdateItemViews();
 
             var characterPosition = _hiEngine.CurrentCharacterPosition;
             _characterView.Position = new Vector3(
@@ -87,7 +90,6 @@ namespace Rayark.Hi
                 _cameraTransform.localPosition.y,
                 characterPosition.y + CAMERA_CHARACTER_DIFF_Z);
             _planeGenerator.UpdatePlanes(characterPosition.y);
-
             
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
             _distanceText.text = ((int)_hiEngine.Distance).ToString() + " m" ;
@@ -131,19 +133,55 @@ namespace Rayark.Hi
             _swipeInputHandler.OnSwipe -= _SpeedUpCharacterSpeed;
         }
 
+        private void _UpdateItemViews()
+        {
+            var speedUpFloorItems = _hiEngine.Items.Where(item => item.Data is SpeedUpFloor);
+            _speedUpFloorGenerator.UpdateItems(
+                speedUpFloorItems.Select(item => new ItemGenerator.ItemData
+                {
+                    Position = new Vector3(item.Position.x, 0, item.Position.y),
+                    IsUsed = item.IsUsed
+                })
+                .ToArray());
+
+            var speedDownFloorItems = _hiEngine.Items.Where(item => item.Data is SpeedDownFloor);
+            _speedDownFloorGenerator.UpdateItems(
+                speedDownFloorItems.Select(item => new ItemGenerator.ItemData
+                {
+                    Position = new Vector3(item.Position.x, 0, item.Position.y),
+                    IsUsed = item.IsUsed
+                })
+                .ToArray());
+
+            var swipeUpItems = _hiEngine.Items.Where(item => item.Data is SwipeUpItem);
+            _swipeUpItemGenerator.UpdateItems(
+                swipeUpItems.Select(item => new ItemGenerator.ItemData
+                {
+                    Position = new Vector3(item.Position.x, 0, item.Position.y),
+                    IsUsed = item.IsUsed
+                })
+                .ToArray());
+        }
+
         public void StartGame()
         {
             _hiEngine = new HiEngine(_xScaleValue, _characterData, 
                 new Item[] {
                     new SpeedUpFloor(new Vector2(3, 6)),
-                    new SpeedDownFloor(new Vector2(3, 3))});
+                    new SpeedDownFloor(new Vector2(3, 3)),
+                    new SwipeUpItem(new Vector2(3, 3))});
             _RegisterEngineEvent();
 
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
             _planeGenerator.Reset();
-            _speedUpFloorGenerator.ReleaseObjects();
-            _speedDownFloorGenerator.ReleaseObjects();
+
+            foreach(var itemGenerator in _itemGenerators)
+            {
+                itemGenerator.ReleaseObjects();
+            }
+
+            _swipeUpItemGenerator.SetDisplayUsedItem(false);
             
             _isGameOver = false;
             _gameOverGroup.SetActive(false);

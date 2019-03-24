@@ -5,6 +5,12 @@ namespace Rayark.Hi
 {
     public class ItemGenerator : MonoBehaviour
     {
+        public class ItemData
+        {
+            public Vector3 Position;
+            public bool IsUsed;
+        }
+
         [SerializeField]
         private Transform _itemRootTransform;
 
@@ -13,20 +19,29 @@ namespace Rayark.Hi
 
         private List<GameObject> _itemInstances = new List<GameObject>();
 
-        public void UpdateItems(Vector3[] positions)
+        private bool _isDisplay = true;
+
+        public void SetDisplayUsedItem(bool isDisplay)
         {
-            if(positions.Length > _itemInstances.Count)
+            _isDisplay = isDisplay;
+        }
+
+        public void UpdateItems(ItemData[] items)
+        {
+            if(items.Length > _itemInstances.Count)
             {
-                for (int i = _itemInstances.Count; i < positions.Length; ++i)
+                for (int i = _itemInstances.Count; i < items.Length; ++i)
                 {
                     _itemInstances.Add(Instantiate(_itemPrefab, _itemRootTransform));
                 }
             }
 
-            var items = _itemInstances.ToArray();
-            for(int i = 0; i < positions.Length; ++i)
+            var itemInstances = _itemInstances.ToArray();
+            for(int i = 0; i < items.Length; ++i)
             {
-                items[i].transform.localPosition = positions[i];
+                itemInstances[i].SetActive(!items[i].IsUsed || _isDisplay);
+                itemInstances[i].transform.localPosition = items[i].Position;
+                
             }
         }
 
