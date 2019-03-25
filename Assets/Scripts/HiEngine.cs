@@ -21,9 +21,10 @@ namespace Rayark.Hi.Engine
         private const float SWIPE_SECTION_DIFF = 33f;
         private const float ITEM_GENERATED_DISTANCE = 330f;
         private const int ITEM_SECTION_DIFF = (int)(ITEM_GENERATED_DISTANCE / ITEM_SECTION_DISTANCE);
-        private const float MIN_X_VALUE = 0;
-        private const float MAX_X_VALUE = 1;
+        private const float EMPTY_PROBABILITY = 0.3f;
 
+        private float _minXValue;
+        private float _maxXValue;
         private float _xScale;
         private CharacterData _currentCharacter;
         private Item[] _items;
@@ -74,8 +75,10 @@ namespace Rayark.Hi.Engine
         }
 
 
-        public HiEngine(float xScale, CharacterData currentCharacter, Item[] items)
+        public HiEngine(float minXValue, float maxXValue, float xScale, CharacterData currentCharacter, Item[] items)
         {
+            _minXValue = minXValue;
+            _maxXValue = maxXValue;
             _xScale = xScale;
             _currentCharacter = new CharacterData
             {
@@ -94,30 +97,19 @@ namespace Rayark.Hi.Engine
             _lastItemGeneratedSectionIndex = -1;
 
             _itemInstances = new List<ItemInstance>();
-            /*
-            var speedUpFloor = _items.FirstOrDefault(item => item is SpeedUpFloor);
-            if(speedUpFloor != null)
-            {
-                _itemInstances.Add(new ItemInstance
-                {
-                    Data = speedUpFloor,
-                    Position = new Vector2(0, 34)
-                });
-            }
-            */
         }
 
         public void Update(float deltaTime)
         {
             _currentCharacter.Position += deltaTime * _currentCharacter.UnitDirection * _currentCharacter.Speed;
 
-            if(_currentCharacter.Position.x <= MIN_X_VALUE ||
-               _currentCharacter.Position.x >= MAX_X_VALUE)
+            if(_currentCharacter.Position.x <= _minXValue ||
+               _currentCharacter.Position.x >= _maxXValue)
             {
                 _currentCharacter.UnitDirection.x = -_currentCharacter.UnitDirection.x;
             }
 
-            _currentCharacter.Position.x = Mathf.Clamp(_currentCharacter.Position.x, MIN_X_VALUE, MAX_X_VALUE);
+            _currentCharacter.Position.x = Mathf.Clamp(_currentCharacter.Position.x, _minXValue, _maxXValue);
 
             _runMiles = _currentCharacter.Position.y;
             int previousSectionIndex = _swipeSectionIndex;
@@ -164,9 +156,9 @@ namespace Rayark.Hi.Engine
             if (direction.magnitude < SWIPE_THRESHOLD)
                 return;
             if (direction.y < 0)
-                return;
+                direction.y = -direction.y;
             if (Mathf.Abs(direction.x) > Mathf.Sqrt(3) * direction.y)
-                return;
+                direction = new Vector2(direction.x, Mathf.Abs(direction.x / Mathf.Sqrt(3)));
 
             direction.x *= _xScale;
             _currentCharacter.UnitDirection = direction.normalized;
@@ -180,13 +172,15 @@ namespace Rayark.Hi.Engine
 
         private void _TouchItems(Vector2 characterPosition, float characterSize, IEnumerable<ItemInstance> itemInstances)
         {
-            Rect characterRect = new Rect(characterPosition, new Vector2(characterSize, characterSize));
+            var characterSizeVector = new Vector2(characterSize, characterSize);
+            Rect characterRect = RectExtension.ToRect(characterPosition, characterSizeVector);
             foreach(var item in itemInstances)
             {
                 if (item.IsUsed)
                     continue;
 
-                Rect itemRect = new Rect(item.Position, item.Data.Size);
+
+                Rect itemRect = RectExtension.ToRect(item.Position, item.Data.Size);
                 if (itemRect.Overlaps(characterRect))
                 {
                     item.Data.GetEffect(this);
@@ -202,29 +196,40 @@ namespace Rayark.Hi.Engine
             {
                 for(int i = lastItemGeneratedSectionIndex + 1; i <= currentItemSectionIndex + ITEM_SECTION_DIFF; ++i)
                 {
-                    var itemIndex = Random.Range(0, _items.Length);
-                    var item = _items[itemIndex];
-
-                    if (_IsItemGenerated(item.GeneratedProbability))
+                    var itemIndex = _SelectItemGeneratedIndex(_items.Select(item => item.GeneratedProbability).Concat(new float[] { EMPTY_PROBABILITY }).ToArray());
+                    if (itemIndex >= _items.Length)
+                        continue;
+                    var generatedItem = _items[itemIndex];
+                    
+                    Rect itemRange = RectExtension.ToRect(new Vector2(0, i * ITEM_SECTION_DISTANCE), new Vector2(10, 12));
+                    var itemInstance = new ItemInstance
                     {
-                        Rect itemRange = new Rect(new Vector2(0, i * ITEM_SECTION_DISTANCE), new Vector2(5, 10));
-                        _itemInstances.Add(new ItemInstance
-                        {
-                            Data = item,
-                            Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
-                            IsUsed = false,
-                        });
-                            
-                    }
+                        Data = generatedItem,
+                        Position = new Vector2(Random.Range(itemRange.xMin, itemRange.xMax), Random.Range(itemRange.yMin, itemRange.yMax)),
+                        IsUsed = false,
+                    };
+                    _itemInstances.Add(itemInstance);
+                    
                     _lastItemGeneratedSectionIndex = i;
                 }
             }
         }
         
 
-        private bool _IsItemGenerated(float probability)
+        private int _SelectItemGeneratedIndex(float[] weights)
         {
-            return Random.Range(0f, 1f) >= probability;
+            float totalWeight = weights.Sum();
+            float selectedWeight = Random.Range(0f, totalWeight);
+            for(int i = 0; i < weights.Length; ++i)
+            {
+                selectedWeight -= weights[i];
+                if(selectedWeight <= 0f)
+                {
+                    return i;
+                }
+            }
+
+            return weights.Length - 1;
         }
     }
 }

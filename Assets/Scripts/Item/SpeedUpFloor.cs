@@ -4,8 +4,8 @@ namespace Rayark.Hi.Engine
 {
     public class SpeedUpFloor : Item
     {
-        private const float SPEED_UP_RATIO = 2;
-        private const float SPEED_UP_AMOUNT = 30;
+        private const float SPEED_UP_RATIO = 1.5f;
+        private const float SPEED_UP_AMOUNT = 50;
 
         private Vector2 _size;
 
@@ -21,7 +21,7 @@ namespace Rayark.Hi.Engine
 
         float Item.GeneratedProbability
         {
-            get { return 0.6f; }
+            get { return 0.5f; }
         }
 
         void Item.GetEffect(IEffect effect)
