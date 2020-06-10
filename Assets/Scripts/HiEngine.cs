@@ -8,7 +8,7 @@ namespace Rayark.Hi.Engine
     {
         public class ItemInstance
         {
-            public Item Data;
+            public IItem Data;
             public Vector2 Position;
             public bool IsUsed;
         }
@@ -27,7 +27,7 @@ namespace Rayark.Hi.Engine
         private float _maxXValue;
         private float _xScale;
         private CharacterData _currentCharacter;
-        private Item[] _items;
+        private IItem[] _items;
         private List<ItemInstance> _itemInstances;
         private int _swipeRemainCount;
         private float _runMiles;
@@ -75,7 +75,7 @@ namespace Rayark.Hi.Engine
         }
 
 
-        public HiEngine(float minXValue, float maxXValue, float xScale, CharacterData currentCharacter, Item[] items)
+        public HiEngine(float minXValue, float maxXValue, float xScale, CharacterData currentCharacter, IItem[] items)
         {
             _minXValue = minXValue;
             _maxXValue = maxXValue;

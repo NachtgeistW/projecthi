@@ -2,7 +2,7 @@
 
 namespace Rayark.Hi.Engine
 {
-    public interface Item
+    public interface IItem
     {
         Vector2 Size { get; }
         float GeneratedProbability { get; }

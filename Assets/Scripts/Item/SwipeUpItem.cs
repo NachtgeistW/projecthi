@@ -2,7 +2,7 @@
 
 namespace Rayark.Hi.Engine
 {
-    public class SwipeUpItem : Item
+    public class SwipeUpItem : IItem
     {
         private const int SWIPE_UP_AMOUNT = 1;
 
@@ -13,17 +13,17 @@ namespace Rayark.Hi.Engine
             _size = size;
         }
 
-        Vector2 Item.Size
+        Vector2 IItem.Size
         {
             get { return _size; }
         }
 
-        float Item.GeneratedProbability
+        float IItem.GeneratedProbability
         {
             get { return 0.8f; }
         }
 
-        void Item.GetEffect(IEffect effect)
+        void IItem.GetEffect(IEffect effect)
         {
             effect.ChangeRemainSwipeCount(SWIPE_UP_AMOUNT);
         }

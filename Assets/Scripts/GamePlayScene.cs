@@ -166,7 +166,7 @@ namespace Rayark.Hi
         public void StartGame()
         {
             _hiEngine = new HiEngine(PlaneGenerator.MIN_X_VALUE, PlaneGenerator.MAX_X_VALUE, _xScaleValue, _characterData, 
-                new Item[] {
+                new IItem[] {
                     new SpeedUpFloor(new Vector2(2, 4)),
                     new SpeedDownFloor(new Vector2(2, 2)),
                     new SwipeUpItem(new Vector2(2, 2))});

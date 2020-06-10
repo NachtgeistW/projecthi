@@ -2,7 +2,7 @@
 
 namespace Rayark.Hi.Engine
 {
-    public class SpeedDownFloor : Item
+    public class SpeedDownFloor : IItem
     {
         private const float SPEED_DOWN_RATIO = 0.6f;
         private const float SPEED_DOWN_AMOUNT = -10f;
@@ -14,17 +14,17 @@ namespace Rayark.Hi.Engine
             _size = size;
         }
 
-        Vector2 Item.Size
+        Vector2 IItem.Size
         {
             get { return _size; }
         }
 
-        float Item.GeneratedProbability
+        float IItem.GeneratedProbability
         {
             get { return 0.7f; }
         }
 
-        void Item.GetEffect(IEffect effect)
+        void IItem.GetEffect(IEffect effect)
         {
             effect.SpeedChangeCharacterSpeed(SPEED_DOWN_RATIO, SPEED_DOWN_AMOUNT);
         }

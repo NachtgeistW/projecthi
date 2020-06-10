@@ -2,7 +2,7 @@
 
 namespace Rayark.Hi.Engine
 {
-    public class SpeedUpFloor : Item
+    public class SpeedUpFloor : IItem
     {
         private const float SPEED_UP_RATIO = 1.5f;
         private const float SPEED_UP_AMOUNT = 50;
@@ -14,17 +14,17 @@ namespace Rayark.Hi.Engine
             _size = size;
         }
 
-        Vector2 Item.Size
+        Vector2 IItem.Size
         {
             get { return _size; }
         }
 
-        float Item.GeneratedProbability
+        float IItem.GeneratedProbability
         {
             get { return 0.5f; }
         }
 
-        void Item.GetEffect(IEffect effect)
+        void IItem.GetEffect(IEffect effect)
         {
             effect.SpeedChangeCharacterSpeed(SPEED_UP_RATIO, SPEED_UP_AMOUNT);
         }
