@@ -216,7 +216,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &188306736
 GameObject:
@@ -925,6 +925,7 @@ MonoBehaviour:
   _speedUpFloorGenerator: {fileID: 760995468}
   _speedDownFloorGenerator: {fileID: 1863821282}
   _swipeUpItemGenerator: {fileID: 1488094785}
+  _swipeDownItemGenerator: {fileID: 2066830003}
   _distanceText: {fileID: 246804770}
   _gameOverGroup: {fileID: 848319961}
   _gameOverDistanceText: {fileID: 727245427}
@@ -1004,7 +1005,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &727245425
 GameObject:
@@ -1320,7 +1321,7 @@ PrefabInstance:
     - target: {fileID: 5979957792994556353, guid: 71eccf8da875e5445a9721c40f245f4c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5979957792994556353, guid: 71eccf8da875e5445a9721c40f245f4c,
         type: 3}
@@ -1391,6 +1392,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: AdBannerCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 7373618191977492127, guid: 71eccf8da875e5445a9721c40f245f4c,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71eccf8da875e5445a9721c40f245f4c, type: 3}
@@ -1635,6 +1641,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2066830002
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2066830004}
+  - component: {fileID: 2066830003}
+  m_Layer: 0
+  m_Name: SwipeDownItemRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2066830003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066830002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55f39241cad5ba46b968ba01c9caca2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _itemRootTransform: {fileID: 2066830004}
+  _itemPrefab: {fileID: 8258831591059741148, guid: 47292b1544043864593f5bf1d4fba67f,
+    type: 3}
+--- !u!4 &2066830004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2066830002}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &626058104933394958 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 626058104933394958, guid: 9c39c490367787d498fa685f8bfd123c,
@@ -1697,7 +1749,7 @@ PrefabInstance:
     - target: {fileID: 8333410507704363783, guid: 9c39c490367787d498fa685f8bfd123c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8333410507704363783, guid: 9c39c490367787d498fa685f8bfd123c,
         type: 3}

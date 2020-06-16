@@ -41,6 +41,9 @@ namespace Rayark.Hi
         private ItemGenerator _swipeUpItemGenerator;
 
         [SerializeField]
+        private ItemGenerator _swipeDownItemGenerator;
+
+        [SerializeField]
         private Text _distanceText;
 
         [SerializeField]
@@ -60,6 +63,7 @@ namespace Rayark.Hi
                 _speedUpFloorGenerator,
                 _speedDownFloorGenerator,
                 _swipeUpItemGenerator,
+                _swipeDownItemGenerator,
             };
 
             StartGame();
@@ -90,21 +94,19 @@ namespace Rayark.Hi
                 _cameraTransform.localPosition.y,
                 characterPosition.y + CAMERA_CHARACTER_DIFF_Z);
             _planeGenerator.UpdatePlanes(characterPosition.y);
-            
+
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
-            _distanceText.text = ((int)_hiEngine.Distance).ToString() + " m" ;
+            _distanceText.text = ((int)_hiEngine.Distance).ToString() + " m";
 
-            if (_hiEngine.CurrentCharacterSpeed <= 0f)
-            {
-                _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
-                _UnregisterEngineEvent();
+            if (!(_hiEngine.CurrentCharacterSpeed <= 0f)) return;
+            _characterView.PlayAnimation(CharacterView.AnimationState.Idle);
+            _UnregisterEngineEvent();
 
-                _swipeInputHandler.enabled = false;
+            _swipeInputHandler.enabled = false;
 
-                _gameOverDistanceText.text = ((int)_hiEngine.Distance).ToString() + " m";
-                _gameOverGroup.SetActive(true);
-                _isGameOver = true;
-            }
+            _gameOverDistanceText.text = ((int)_hiEngine.Distance).ToString() + " m";
+            _gameOverGroup.SetActive(true);
+            _isGameOver = true;
         }
 
         private void _SpeedUpCharacterSpeed(Vector2 swipeDirection)
@@ -161,28 +163,40 @@ namespace Rayark.Hi
                     IsUsed = item.IsUsed
                 })
                 .ToArray());
+
+            var swipeDownItems = _hiEngine.Items.Where(item => item.Data is SwipeDownItem);
+            _swipeDownItemGenerator.UpdateItems(
+                swipeDownItems.Select(item => new ItemGenerator.ItemData
+                {
+                    Position = new Vector3(item.Position.x, 0, item.Position.y),
+                    IsUsed = item.IsUsed
+                })
+                .ToArray());
         }
 
         public void StartGame()
         {
-            _hiEngine = new HiEngine(PlaneGenerator.MIN_X_VALUE, PlaneGenerator.MAX_X_VALUE, _xScaleValue, _characterData, 
+            _hiEngine = new HiEngine(PlaneGenerator.MIN_X_VALUE, PlaneGenerator.MAX_X_VALUE, _xScaleValue, _characterData,
                 new IItem[] {
                     new SpeedUpFloor(new Vector2(2, 4)),
                     new SpeedDownFloor(new Vector2(2, 2)),
-                    new SwipeUpItem(new Vector2(2, 2))});
+                    new SwipeUpItem(new Vector2(2, 2)),
+                    new SwipeDownItem(new Vector2(2, 2))
+                });
             _RegisterEngineEvent();
 
             _characterView.PlayAnimation(CharacterView.AnimationState.Run);
             _UpdateRemainSwipeTimeCountText(_hiEngine.SwipeRemainCount);
             _planeGenerator.Reset();
 
-            foreach(var itemGenerator in _itemGenerators)
+            foreach (var itemGenerator in _itemGenerators)
             {
                 itemGenerator.ReleaseObjects();
             }
 
             _swipeUpItemGenerator.SetDisplayUsedItem(false);
-            
+            _swipeDownItemGenerator.SetDisplayUsedItem(false);
+
             _isGameOver = false;
             _gameOverGroup.SetActive(false);
             _swipeInputHandler.enabled = true;

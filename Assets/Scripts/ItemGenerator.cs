@@ -41,7 +41,6 @@ namespace Rayark.Hi
             {
                 itemInstances[i].SetActive(!items[i].IsUsed || _isDisplay);
                 itemInstances[i].transform.localPosition = items[i].Position;
-                
             }
         }
 

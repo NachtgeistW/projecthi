@@ -150,7 +150,6 @@ namespace Rayark.Hi.Engine
             _swipeRemainCount = Mathf.Max(0, _swipeRemainCount);
         }
 
-
         public void ChangeCharacterDirection(Vector2 direction)
         {
             if (direction.magnitude < SWIPE_THRESHOLD)
